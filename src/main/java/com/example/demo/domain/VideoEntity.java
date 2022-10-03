@@ -10,22 +10,15 @@ import javax.persistence.Lob;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "video")
 @Data
 @NoArgsConstructor
-public class Video{
-    @Id
+public class VideoEntity{
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column(unique = true)
+	@Column(length = 4000)
     private String name;
-
-    @Lob
-    private byte[] data;
-
-    public Video(String name, byte[] data) {
-        this.name = name;
-        this.data = data;
-    }
+    @Column(unique = true, length = 4000)
+	private String path;
 }

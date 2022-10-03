@@ -1,52 +1,44 @@
 package com.example.demo.controllers;
 
-import lombok.AllArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.demo.services.VideoService;
-
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@RestController
-@RequestMapping("video")
-@AllArgsConstructor
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.demo.services.VideoService;
+import com.example.demo.vo.VideoVO;
+
+@Controller
 public class VideoController {
-
+	@Autowired
     private VideoService videoService;
+    
+	@GetMapping("/")
+	public String index(Model model) {
+		List<VideoVO> allVideos = videoService.getAllVideo();
+		model.addAttribute("allVideos", allVideos);
+		return "index";
+	}
+	
+	@GetMapping("/player")
+	public String playVideo(@RequestParam(name="id") Long id, Model model) throws UnsupportedEncodingException {
+		String url = String.format("/video/%d", id);
+		model.addAttribute("src", url);
+		return "playing";
+	}
 
-    // Each parameter annotated with @RequestParam corresponds to a form field where the String argument is the name of the field
-    @PostMapping()
-    public ResponseEntity<String> saveVideo(@RequestParam("file") MultipartFile file, @RequestParam("name") String name) throws IOException {
-
-        videoService.saveVideo(file, name);
-        return ResponseEntity.ok("Video saved successfully.");
-
-    }
-
-    // {name} is a path variable in the url. It is extracted as the String parameter annotated with @PathVariable
-    @GetMapping("{name}")
-    public ResponseEntity<Resource> getVideoByName(@PathVariable("name") String name){
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new ByteArrayResource(videoService.getVideo(name).getData()));
-
-    }
-
-    @GetMapping("all")
-    public ResponseEntity<List<String>> getAllVideoNames(){
-
-        return ResponseEntity
-                .ok(videoService.getAllVideoNames());
-
-    }
-
+	@GetMapping("/random")
+	public String playRandomVideo(Model model) throws IOException {
+		Long id = videoService.getRandomVideo().getId();
+		String url = String.format("/video/%d", id);
+		model.addAttribute("src", url);
+		return "random";
+	}
 }

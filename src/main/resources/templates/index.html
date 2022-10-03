@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>MyTube</title>
@@ -11,29 +11,27 @@
         <h1>MyTube</h1>
     </header>
     <main>
-        <div id="video-list">
-            <header>
-                <h3>Your videos</h3>
-            </header>
-            <ul id="your-videos">
-            </ul>
-        </div>
-        <div id="video-player">
-            <header>
-                <h3 id="now-playing"></h3>
-            </header>
-            <video id="video-screen" width="720px" height="480px" controls></video>
-        </div>
+        <h3><a href="/random">Play Random Videos</a></h3>
+        
         <form id="video-form">
             <fieldset>
                 <legend>Upload a video</legend>
                 <label for="file">Video File</label>
                 <input id="file" name="file" type="file" accept="application/mp4">
-                <label for="name">Video Name</label>
-                <input id="name" name="name" type="text">
                 <button type="submit">Save</button>
             </fieldset>
         </form>
+        
+        <div id="video-list">
+            <header>
+                <h3>Your videos</h3>
+            </header>
+            <ul id="your-videos">
+            	<li th:each="video : ${allVideos}">
+            		<a th:href="@{/player(id=${video.id})}" th:text="${video.name}"></a>
+            	</li>
+            </ul>
+        </div>
     </main>
     <script src="main.js"></script>
 </body>

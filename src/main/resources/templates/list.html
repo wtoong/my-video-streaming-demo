@@ -9,6 +9,9 @@
 <body>
     <header>
         <h1>MyTube</h1>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
     </header>
     <main>
         <h3><a href="/random">Play Random Videos</a></h3>

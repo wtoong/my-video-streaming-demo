@@ -19,11 +19,6 @@
 		}
 		
 		#video-player {
-			position: fixed;
-			right: 0;
-			bottom: 0;
-			min-width: 100%;
-			min-height: 100%;
 			text-align: center
 		}
 	</style>
@@ -40,12 +35,28 @@
 
 <script>
 	const video = document.querySelector('#video-screen');
+	
+	function resize(v) {
+		console.log('before', v.videoHeight, v.videoWidth);
+		videoRatio = v.videoHeight / v.videoWidth;
+		windowRatio = window.innerHeight / window.innerWidth; /* browser size */
+		
+	    if (windowRatio < videoRatio) {
+	        v.width = window.innerWidth;
+	    } 
+	    else {
+	        v.height = window.innerHeight;
+	    }
+		console.log('after', v.height, v.width);
+	}
+	resize(video)
 
 	function load() {
 		fetch('/video/random')
 			.then(res => res.text())
 			.then(res => {
 				video.src = '/video/' + res
+				resize(video)
 				video.play()
 			})
 	}

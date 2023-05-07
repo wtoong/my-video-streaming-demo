@@ -6,20 +6,28 @@
 	<style>
 		* {
 			box-sizing: border-box;
+			margin: 0;
+			border: 0;
+			padding: 0;
 		}
 
 		body {
 			margin: 0;
-			font-family: Arial;
-			font-size: 17px;
+			border: 0;
+			padding: 0;
 		}
 
+		video {
+		    object-fit: cover;
+			margin: 0;
+			border: 0;
+			padding: 0;
+		}
+		
 		#video-player {
-			position: fixed;
-			right: 0;
-			bottom: 0;
-			min-width: 100%;
-			min-height: 100%;
+			margin: 0;
+			border: 0;
+			padding: 0;
 			text-align: center
 		}
 	</style>
@@ -31,6 +39,41 @@
 			<source th:src="${src}" />
 		</video>
 	</div>
+
+	<script>
+		const video = document.querySelector('#video-screen');
+		
+		function resize(v) {
+			console.log('before', v.width, v.height);
+			console.log('video', video.videoHeight, video.videoWidth);
+			videoRatio = video.videoHeight / video.videoWidth;
+			targetHeight = window.innerHeight - 4
+			windowRatio = targetHeight / window.innerWidth; /* browser size */
+			
+		    if (windowRatio < videoRatio) {
+		        v.height = targetHeight;
+		        v.width = v.height / videoRatio;
+		    } 
+		    else {
+		        v.width = window.innerWidth;
+		        v.height = v.width * videoRatio;
+		    }
+		    
+			console.log('after', v.width, v.height);
+		}
+		
+		video.onloadeddata = function() {
+			resize(video)
+			video.play()
+		}
+		
+		function resizeVideo() {
+		  var videoScreen = document.querySelector('#video-screen');
+		  resize(videoScreen)
+		}
+		
+		window.addEventListener("resize", resizeVideo);
+	</script>
 </body>
 
 </html>
